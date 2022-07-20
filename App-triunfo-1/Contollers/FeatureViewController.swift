@@ -10,7 +10,8 @@ import UIKit
 class FeatureViewController: UIViewController {
     
     var popularMovies: [Movie] = [] //Movie.popularMovies()
-    let nowPlayingMovies = Movie.nowPlayingMovies()
+    var nowPlayingMovies: [Movie] = []
+    var upcomingMovies: [Movie] = []
     
     
     
@@ -28,15 +29,24 @@ class FeatureViewController: UIViewController {
         nowPlayingCollectionview.dataSource = self
         nowPlayingCollectionview.delegate = self
         
+        UpcomingCollectionView.dataSource = self
+        UpcomingCollectionView.delegate = self
+        
         
         Task {
             popularMovies = await Movie.popularMoviesAPI()
             self.PopularCollectionView.reloadData()
         }
+        Task {
+            nowPlayingMovies = await Movie.nowPlayingMoviesAPI()
+            self.nowPlayingCollectionview.reloadData()
+        }
         
-
-        
-        
+        Task {
+            upcomingMovies = await Movie.upcomingMoviesAPI()
+            self.UpcomingCollectionView.reloadData()
+            
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -49,5 +59,5 @@ class FeatureViewController: UIViewController {
         }
         
     }
-   
+    
 }

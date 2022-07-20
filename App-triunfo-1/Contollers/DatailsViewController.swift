@@ -1,9 +1,4 @@
-//
-//  DatailsViewController.swift
-//  App-triunfo-1
-//
-//  Created by Tonjesus on 13/07/22.
-//
+
 
 import UIKit
 
@@ -13,24 +8,37 @@ class DatailsViewController: UIViewController {
     @IBOutlet var posterImage: UIImageView!
     @IBOutlet var ratingLabel: UILabel!
     @IBOutlet var overviewLabel: UILabel!
+    
     var movie: Movie?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(movie)
-        self.title = movie?.title
+      
         
         guard let movie = movie else {
             return
         }
-
-        self.title = movie.title
-        self.BackdropImage.image = UIImage (named: movie.backdropPath)
+        title = movie.title
+        
+        Task{
+            let imageData = await Movie.downloadImageDate(withPath: movie.backdropPath)
+            let image = UIImage(data: imageData) ?? UIImage()
+            BackdropImage.image = image
+        }
+        
         TitleLabel.text = movie.title
-        posterImage.image = UIImage(named: movie.posterPath)
-        ratingLabel.text = "Rating: \(movie.voteAverage)/10"
-        overviewLabel.text = movie.overview
+        
+        Task{
+            let imageData = await Movie.downloadImageDate(withPath: movie.posterPath)
+            let image = UIImage(data: imageData) ?? UIImage()
+            posterImage.image = image
+            
+            
+        }
+        
+       ratingLabel.text = "Rating: \(movie.voteAverage)/10"
+       overviewLabel.text = movie.overview
         
     }
 }
